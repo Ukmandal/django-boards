@@ -39,19 +39,15 @@ def new_topic(request, pk):
             )
             return redirect('board_topics', pk=board.pk)  # TODO: redirect to the created topic page
     else:
-
-
-
-
         form = NewTopicForm()
     return render(request, 'new_topic.html', {'board': board, 'form': form})
 
 
-def topic_posts(request, pk, topic_pk):
-    topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
-    topic.views += 1
-    topic.save()
-    return render(request, 'topic_posts.html', {'topic': topic})
+# def topic_posts(request, pk, topic_pk):
+#     topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
+#     topic.views += 1
+#     topic.save()
+#     return render(request, 'topic_posts.html', {'topic': topic})
 
 @login_required
 def reply_topic(request, pk, topic_pk):
@@ -80,24 +76,24 @@ def reply_topic(request, pk, topic_pk):
     return render(request, 'reply_topic.html', {'topic': topic, 'form': form})    
 
 
-def board_topics(request, pk):
-    board = get_object_or_404(Board, pk=pk)
-    queryset = board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
-    page = request.GET.get('page', 1)
+# def board_topics(request, pk):
+#     board = get_object_or_404(Board, pk=pk)
+#     queryset = board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
+#     page = request.GET.get('page', 1)
 
-    paginator = Paginator(queryset, 20)
+#     paginator = Paginator(queryset, 20)
 
-    try:
-        topics = paginator.page(page)
-    except PageNotAnInteger:
-        # fallback to the first page
-        topics = paginator.page(1)
-    except EmptyPage:
-        # probably the user tried to add a page number
-        # in the url, so we fallback to the last page
-        topics = paginator.page(paginator.num_pages)
+#     try:
+#         topics = paginator.page(page)
+#     except PageNotAnInteger:
+#         # fallback to the first page
+#         topics = paginator.page(1)
+#     except EmptyPage:
+#         # probably the user tried to add a page number
+#         # in the url, so we fallback to the last page
+#         topics = paginator.page(paginator.num_pages)
 
-    return render(request, 'topics.html', {'board': board, 'topics': topics})
+#     return render(request, 'topics.html', {'board': board, 'topics': topics})
 
 @method_decorator(login_required, name='dispatch')
 class PostUpdateView(UpdateView):
